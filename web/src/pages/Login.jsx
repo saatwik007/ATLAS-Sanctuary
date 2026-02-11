@@ -3,7 +3,8 @@ import Container from "../components/Container";
 import NavBar from "../components/NavBar";
 import Card from "../components/Card";
 import Button from "../components/Button";
-import { mockApi } from "../api/mock";
+import { api } from "../api/client";
+import { setSession } from "../utils/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ export default function Login() {
     setLoading(true);
     setMsg("");
     try {
-      const res = await mockApi.sendEmailOtp(email);
+      const res = await api.sendEmailOtp(email);
       if (!res.ok) throw new Error(res.error || "Failed to send OTP");
       setDevOtp(res.devOtp || "");
       setStep("OTP");
@@ -33,9 +34,9 @@ export default function Login() {
     setLoading(true);
     setMsg("");
     try {
-      const res = await mockApi.verifyEmailOtp(email, otp);
+      const res = await api.verifyEmailOtp(email, otp);
       if (!res.ok) throw new Error(res.error || "OTP verification failed");
-      localStorage.setItem("token", res.token);
+      setSession({ token: res.token, email });
       setMsg("Logged in successfully. Go to Zoos to book tickets.");
     } catch (e) {
       setMsg(e.message);

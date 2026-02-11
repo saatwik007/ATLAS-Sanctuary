@@ -1,4 +1,6 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import Button from "./Button";
+import { getEmail, isLoggedIn, logout } from "../utils/auth";
 
 const linkClass = ({ isActive }) =>
   [
@@ -7,6 +9,10 @@ const linkClass = ({ isActive }) =>
   ].join(" ");
 
 export default function NavBar() {
+  const navigate = useNavigate();
+  const loggedIn = isLoggedIn();
+  const email = getEmail();
+
   return (
     <div className="mb-8 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
       <Link to="/zoos" className="flex items-center gap-2">
@@ -19,12 +25,12 @@ export default function NavBar() {
         </div>
       </Link>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <NavLink className={linkClass} to="/login">
           Login
         </NavLink>
         <NavLink className={linkClass} to="/zoos">
-          Sanctuary
+          Wildlife Sanctuary
         </NavLink>
         <NavLink className={linkClass} to="/my-bookings">
           My Bookings
@@ -32,6 +38,23 @@ export default function NavBar() {
         <NavLink className={linkClass} to="/admin">
           Admin
         </NavLink>
+
+        {loggedIn && (
+          <div className="ml-2 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+            <div className="text-xs text-slate-300">Signed in</div>
+            <div className="max-w-[180px] truncate text-xs font-semibold text-slate-100">{email}</div>
+            <Button
+              variant="ghost"
+              className="px-3 py-1.5 text-xs"
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

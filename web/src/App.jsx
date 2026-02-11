@@ -1,10 +1,13 @@
 import './App.css'
+
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Zoos from "./pages/Zoos";
 import Book from "./pages/Book";
 import MyBookings from "./pages/MyBookings";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import RequireAuth from "./components/RequireAuth";
 
 export default function App() {
   return (
@@ -13,9 +16,31 @@ export default function App() {
         <Route path="/" element={<Navigate to="/zoos" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/zoos" element={<Zoos />} />
-        <Route path="/book/:zooId" element={<Book />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route
+          path="/book/:zooId"
+          element={
+            <RequireAuth>
+              <Book />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-bookings"
+          element={
+            <RequireAuth>
+              <MyBookings />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth>
+              <AdminDashboard />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
